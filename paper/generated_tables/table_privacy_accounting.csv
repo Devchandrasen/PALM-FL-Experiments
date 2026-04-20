@@ -1,0 +1,16 @@
+Dataset,Mode,Released objects,Clipping threshold,Noise multiplier,Delta,Accounting unit,Epsilon max,Interpretation
+MNIST,Local-only,none,--,--,--,not DP-accounted,not DP-accounted,no summary-release privacy accounting
+MNIST,Stats-only,"counts, means, variances",S_mu=S_v=4; S_n=200,0.5,1e-5,client-summary,140.69,high epsilon; not sample-level DP
+MNIST,stats-transfer-M,"counts, means, variances; prototype package",S_mu=S_v=4; S_n=200,0.5,1e-5,client-summary,140.69,high epsilon; not sample-level DP
+MNIST,stats-transfer-R,"counts, means, variances; prototype package",S_mu=S_v=4; S_n=200,0.5,1e-5,client-summary,100.92,high epsilon; not sample-level DP
+MNIST,histogram-only,counts and class mask,S_n=200,0.5,1e-5,client-summary,61.70,counts-only release; not sample-level DP
+MNIST,mean-only,latent means and noisy availability,S_mu=4; S_a=1,0.5,1e-5,client-summary,102.88,mean-release diagnostic; not sample-level DP
+MNIST,FedAvg,model weights,--,--,--,not DP-accounted,not DP-accounted,not private by this accountant
+MNIST,FedMD-style,proxy logits,--,--,--,not DP-accounted,not DP-accounted,not private by this accountant
+CIFAR-10,Local-only,none,--,--,--,not DP-accounted,not DP-accounted,no summary-release privacy accounting
+CIFAR-10,Stats-only,"counts, means, variances",S_mu=S_v=4; S_n=200,0.5,1e-5,client-summary,194.34,high epsilon; not sample-level DP
+CIFAR-10,stats-transfer-M,"counts, means, variances; prototype package",S_mu=S_v=4; S_n=200,0.5,1e-5,client-summary,194.34,high epsilon; not sample-level DP
+CIFAR-10,stats-transfer-R,"counts, means, variances; prototype package",S_mu=S_v=4; S_n=200,0.5,1e-5,client-summary,129.58,high epsilon; not sample-level DP
+CIFAR-10,histogram-only,counts and class mask,S_n=200,0.5,1e-5,client-summary,81.89,counts-only release; not sample-level DP
+CIFAR-10,mean-only,latent means and noisy availability,S_mu=4; S_a=1,0.5,1e-5,client-summary,138.85,mean-release diagnostic; not sample-level DP
+CIFAR-10,FedAvg,model weights,--,--,--,not DP-accounted,not DP-accounted,not private by this accountant

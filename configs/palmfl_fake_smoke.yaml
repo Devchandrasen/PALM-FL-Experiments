@@ -1,0 +1,103 @@
+experiment_name: palmfl_v8_fake_smoke
+output_root: ./outputs
+seed: 7
+
+dataset:
+  name: fake
+  root: ./data
+  download: false
+  batch_size: 32
+  eval_batch_size: 128
+  num_workers: 0
+  dirichlet_alpha: 0.5
+  min_client_samples: 16
+  augment: false
+  fake_train_size: 800
+  fake_test_size: 200
+  fake_num_classes: 10
+  fake_channels: 3
+  fake_image_size: 32
+
+algorithm:
+  variant: stats_transfer
+
+system:
+  num_clients: 8
+  participation_rate: 0.5
+  rounds: 3
+  warmup_rounds: 1
+  eval_every: 1
+  eval_num_clients: 4
+  eval_max_batches: 0
+  device: auto
+  stat_batch_size: 64
+
+model:
+  architectures: [small_cnn, wide_cnn, tiny_resnet, tiny_mobilenet]
+  latent_dim: 32
+  adapter_hidden_dim: 64
+  head_hidden_dim: 0
+  dropout: 0.1
+
+training:
+  lr: 0.001
+  weight_decay: 0.0001
+  local_epochs: 1
+  real_finetune_epochs: 0
+  grad_clip: 5.0
+  prototype_loss_weight: 0.25
+  prototype_ce_loss_weight: 0.10
+  prototype_ce_temperature: 0.25
+  covariance_loss_weight: 0.01
+  stat_head_loss_weight: 1.0
+  stat_head_steps: 2
+  stat_head_min_steps: 1
+  stat_head_ramp_rounds: 0
+  label_smoothing: 0.0
+  latent_mixup_alpha: 0.1
+  normalize_latent: true
+  stats_max_batches: 4
+  enable_prototype_alignment: true
+  enable_stat_head: true
+  upload_stats: true
+  stat_prior_mix: 0.25
+  stat_missing_class_boost: 1.5
+  stat_inverse_hist_power: 0.5
+  stat_class_focus_mix: 0.3
+
+stats_server:
+  min_variance: 0.03
+  ema_momentum: 0.6
+  temperature: 1.0
+  min_class_coverage_for_transfer: 0.0
+
+dp:
+  enable: true
+  clip_norm: 3.0
+  count_clip: 100.0
+  count_threshold: 1.0
+  noise_multiplier: 0.5
+  delta: 1.0e-5
+
+scheduler:
+  policy: mobile
+  uplink_budget_mb: 2.0
+  downlink_budget_mb: 2.0
+  energy_budget_j: 40.0
+  round_time_budget_s: 30.0
+  min_battery_fraction: 0.1
+  utility_weights:
+    data: 1.0
+    diversity: 0.8
+    staleness: 0.5
+    battery: 0.3
+    loss: 0.2
+  cost_weights:
+    upload: 1.0
+    download: 0.5
+    energy: 0.8
+    time: 0.8
+
+logging:
+  save_checkpoints: true
+  checkpoint_every: 2

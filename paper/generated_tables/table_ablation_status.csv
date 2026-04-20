@@ -1,0 +1,21 @@
+Dataset,Mode,Scheduler,Accuracy,Macro-F1,Upload MB,Download MB,Predicted time s,Predicted energy J,Epsilon/accounting,Interpretation
+MNIST,histogram-only,mobile,48.96±5.09,0.3858±0.0485,0.0002,0.0000,11.55,3.34,61.70,counts-only scheduler control; three MNIST seeds
+MNIST,histogram-only,random,56.51±3.46,0.4527±0.0391,0.0002,0.0000,22.77,6.73,45.58,counts-only random-participation control; three MNIST seeds
+MNIST,mean-only,mobile,50.80±2.76,0.4064±0.0315,0.0075,0.0000,16.25,5.92,102.88,latent means with noisy availability; three MNIST seeds
+MNIST,mean-only,random,55.70±4.24,0.4449±0.0536,0.0075,0.0000,22.77,6.73,74.61,latent means under random participation; three MNIST seeds
+MNIST,stats-only no-noise,mobile,51.32±5.10,0.4060±0.0552,0.0148,0.0000,16.25,5.98,non-private diagnostic,non-private summary diagnostic; three MNIST seeds
+MNIST,transfer no-noise,mobile,52.17±2.89,0.4163±0.0332,0.0148,0.0150,17.96,4.48,non-private diagnostic,non-private transfer diagnostic; three MNIST seeds
+MNIST,count-only transfer,mobile,52.09±2.84,0.4129±0.0421,0.0002,0.0003,20.88,4.87,61.70,transfer package without prototypes; three MNIST seeds
+MNIST,Stats-only,mobile/no_deficit,51.02±4.09,0.4056±0.0466,0.0148,0.0000,16.25,5.92,140.69,full-summary scheduler without released-count deficit; three MNIST seeds
+MNIST,stats-transfer-M,mobile/no_deficit,50.55±3.47,0.4023±0.0403,0.0148,0.0150,16.59,6.01,140.69,mobile transfer without released-count deficit; three MNIST seeds
+MNIST,stats-transfer-R,random/no_deficit,55.49±3.93,0.4426±0.0450,0.0148,0.0150,23.27,6.87,100.92,random transfer without released-count deficit; three MNIST seeds
+CIFAR-10,histogram-only,mobile,26.96±2.52,0.1738±0.0281,0.0002,0.0000,38.50,12.63,81.89,counts-only scheduler control; three CIFAR-10 seeds
+CIFAR-10,histogram-only,random,32.28±2.59,0.2132±0.0270,0.0002,0.0000,79.12,19.10,56.07,counts-only random-participation control; three CIFAR-10 seeds
+CIFAR-10,mean-only,mobile,28.56±3.19,0.1861±0.0323,0.0100,0.0000,41.09,16.29,138.85,latent means with noisy availability; three CIFAR-10 seeds
+CIFAR-10,mean-only,random,32.73±2.25,0.2163±0.0211,0.0100,0.0000,79.13,19.11,92.96,latent means under random participation; three CIFAR-10 seeds
+CIFAR-10,stats-only no-noise,mobile,28.33±1.73,0.1860±0.0208,0.0197,0.0000,41.09,16.30,non-private diagnostic,non-private summary diagnostic; three CIFAR-10 seeds
+CIFAR-10,transfer no-noise,mobile,28.20±1.86,0.1800±0.0237,0.0197,0.0199,41.45,16.44,non-private diagnostic,non-private transfer diagnostic; three CIFAR-10 seeds
+CIFAR-10,count-only transfer,mobile,28.73±2.45,0.1876±0.0275,0.0002,0.0003,41.44,16.43,81.89,transfer package without prototypes; three CIFAR-10 seeds
+CIFAR-10,Stats-only,mobile/no_deficit,28.73±2.45,0.1876±0.0275,0.0197,0.0000,41.09,16.30,191.71,full-summary scheduler without released-count deficit; three CIFAR-10 seeds
+CIFAR-10,stats-transfer-M,mobile/no_deficit,28.48±2.64,0.1811±0.0281,0.0197,0.0199,41.45,16.44,191.71,mobile transfer without released-count deficit; three CIFAR-10 seeds
+CIFAR-10,stats-transfer-R,random/no_deficit,32.82±3.17,0.2133±0.0305,0.0197,0.0199,79.83,19.28,126.69,random transfer without released-count deficit; three CIFAR-10 seeds

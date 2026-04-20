@@ -1,14 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-PY=${PY:-/home/dr-chandrasen-pandey/anaconda3/envs/palmfl310/bin/python}
-PLOT_PY=${PLOT_PY:-/home/dr-chandrasen-pandey/anaconda3/envs/palmfl310/bin/python}
+PY=${PY:-python3}
+PLOT_PY=${PLOT_PY:-$PY}
+DEVICE=${DEVICE:-cuda}
 PROFILE_CSV=${PROFILE_CSV:-data/mobilebandwidth/real_mobile_profiles.csv}
 
 "$PY" scripts/build_real_mobile_profiles.py --num-clients 10
 
 COMMON=(
-  --override system.device=cuda
+  --override system.device="${DEVICE}"
   --override scheduler.profile_csv="${PROFILE_CSV}"
   --override system.eval_initial=false
   --override system.eval_every=5
@@ -100,4 +101,9 @@ for seed in 42 43 44; do
 done
 
 "$PY" scripts/aggregate_results.py
-"$PLOT_PY" scripts/plot_acceptance_figures.py --split-protocol independent
+"$PY" scripts/curate_trace_results.py
+"$PLOT_PY" scripts/plot_experiment_figures.py \
+  --results analysis/trace_all_results.csv \
+  --fairness analysis/trace_architecture_fairness.csv \
+  --figdir analysis/figures \
+  --split-protocol independent

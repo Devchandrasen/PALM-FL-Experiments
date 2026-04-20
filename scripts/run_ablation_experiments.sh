@@ -99,4 +99,4 @@ for dataset in ${DATASETS}; do
 done
 
 "$PY" scripts/aggregate_results.py
-"$PY" scripts/curate_tmc_results.py
+"$PY" scripts/curate_trace_results.py

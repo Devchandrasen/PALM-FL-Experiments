@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-PY=${PY:-/home/dr-chandrasen-pandey/anaconda3/envs/palmfl310/bin/python}
-PLOT_PY=${PLOT_PY:-python}
+PY=${PY:-python3}
+PLOT_PY=${PLOT_PY:-$PY}
+DEVICE=${DEVICE:-cuda}
 
 COMMON=(
-  --override system.device=cuda
+  --override system.device="${DEVICE}"
   --override dataset.partition_seed=42
   --override model.arch_seed=42
   --override system.eval_initial=false
@@ -40,7 +41,7 @@ run_fedavg() {
     "${COMMON[@]}" "$@"
 }
 
-# Missing CIFAR transfer fixed-split rows for the current paper.
+# Additional CIFAR transfer fixed-split rows.
 for seed in 43 44; do
   run_palm configs/palmfl_cifar10_stats_transfer_mobile.yaml palmfl_v8_cifar10_stats_transfer_mobile_sigma05 "$seed" --override dp.noise_multiplier=0.5
   run_palm configs/palmfl_cifar10_stats_transfer_random.yaml palmfl_v8_cifar10_stats_transfer_random_sigma05 "$seed" --override dp.noise_multiplier=0.5
@@ -53,4 +54,4 @@ for seed in 42 43 44; do
 done
 
 "$PY" scripts/aggregate_results.py
-"$PLOT_PY" scripts/plot_acceptance_figures.py
+"$PLOT_PY" scripts/plot_experiment_figures.py --figdir analysis/figures

@@ -89,7 +89,7 @@ def plot_accuracy_energy(rows: list[dict[str, str]], out: Path) -> None:
 
 def plot_comm_privacy(rows: list[dict[str, str]], out: Path) -> None:
     rows = [r for r in rows if r.get("mode") in {"Local-only", "Stats-only", "PALM-transfer"}]
-    labels = [f"{r['dataset'].upper()}\\n{r['mode']}\\n{r['scheduler']}" for r in rows]
+    labels = [f"{r['dataset'].upper()}\n{r['mode']}\n{r['scheduler']}" for r in rows]
     x = list(range(len(rows)))
     uplink = [f(r, "uplink_mb") for r in rows]
     downlink = [f(r, "downlink_mb") for r in rows]
@@ -101,7 +101,7 @@ def plot_comm_privacy(rows: list[dict[str, str]], out: Path) -> None:
     ax1.legend(fontsize=7, frameon=False)
     ax1.grid(True, axis="y", linewidth=0.3, alpha=0.5)
     ax2.bar(x, eps, color="#72b7b2")
-    ax2.set_ylabel(r"$\epsilon_{\max}$")
+    ax2.set_ylabel(r"Summary $\epsilon_{\max}$")
     ax2.set_xticks(x)
     ax2.set_xticklabels(labels, rotation=35, ha="right", fontsize=6)
     ax2.grid(True, axis="y", linewidth=0.3, alpha=0.5)
@@ -184,10 +184,10 @@ def plot_architecture_fairness(path: Path, out: Path, split_protocol: str) -> No
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Create acceptance-readiness figures from aggregated PALM-FL results")
+    parser = argparse.ArgumentParser(description="Create diagnostic figures from aggregated PALM-FL experiment results")
     parser.add_argument("--results", type=Path, default=Path("analysis/all_results.csv"))
     parser.add_argument("--fairness", type=Path, default=Path("analysis/architecture_fairness.csv"))
-    parser.add_argument("--figdir", type=Path, default=Path("/home/dr-chandrasen-pandey/PALM_review/figures"))
+    parser.add_argument("--figdir", type=Path, default=Path("analysis/figures"))
     parser.add_argument("--split-protocol", default="independent")
     args = parser.parse_args()
     rows = filter_split(read_rows(args.results), args.split_protocol)

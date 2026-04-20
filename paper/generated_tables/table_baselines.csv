@@ -1,5 +1,0 @@
-Dataset,Mode,Scheduler,Accuracy,Macro-F1,Upload MB,Download MB,Predicted time s,Predicted energy J,Epsilon/accounting,Interpretation
-MNIST,FedAvg,mobile,95.98±1.35,0.9594±0.0137,1.5996,1.5996,8.30,3.46,not DP-accounted,homogeneous full-model reference
-MNIST,FedProto-style,mobile,50.23±3.97,0.3959±0.0436,0.0148,0.0150,16.25,6.89,140.69,heterogeneous prototype-style reference
-MNIST,FedMD-style,mobile,45.68±4.18,0.3436±0.0524,0.0781,0.0781,11.96,3.55,not DP-accounted,heterogeneous proxy-logit reference
-CIFAR-10,FedAvg,mobile,59.39,0.5464,1.7292,1.7292,13.58,9.27,not DP-accounted,homogeneous full-model case-study reference

@@ -109,12 +109,12 @@ def grouped_fairness(rows: list[dict[str, str]], keep_dirs: set[str]) -> list[di
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Curate only the revised TMC trace/independent-split runs.")
+    parser = argparse.ArgumentParser(description="Curate trace-derived independent-split PALM-FL experiment runs.")
     parser.add_argument("--all-results", type=Path, default=Path("analysis/all_results.csv"))
     parser.add_argument("--client-fairness", type=Path, default=Path("analysis/client_fairness.csv"))
-    parser.add_argument("--out-all", type=Path, default=Path("analysis/tmc_trace_all_results.csv"))
-    parser.add_argument("--out-grouped", type=Path, default=Path("analysis/tmc_trace_grouped_results.csv"))
-    parser.add_argument("--out-fairness", type=Path, default=Path("analysis/tmc_trace_architecture_fairness.csv"))
+    parser.add_argument("--out-all", type=Path, default=Path("analysis/trace_all_results.csv"))
+    parser.add_argument("--out-grouped", type=Path, default=Path("analysis/trace_grouped_results.csv"))
+    parser.add_argument("--out-fairness", type=Path, default=Path("analysis/trace_architecture_fairness.csv"))
     args = parser.parse_args()
 
     rows = [

@@ -1,154 +1,107 @@
-# PALM-FL Reproducibility
+# PALM-FL Experiment Reproducibility
 
-This package contains the manuscript, curated result files, figure/table scripts, and links to the full local experiment runner used for the current PALM-FL revision.
+This repository is an experiment-only package. It contains runnable code, configs, curated CSV outputs, and scripts for reproducing or extending the PALM-FL experiment matrix.
 
-The public artifact repository is available at:
+Repository:
 
 ```text
-https://github.com/Devchandrasen/PALM-FL-TMC-Artifact
+https://github.com/Devchandrasen/PALM-FL-Experiments
 ```
-
-## Layout
-
-| Path | Purpose |
-|---|---|
-| `main.tex`, `main.pdf` | Manuscript source and compiled PDF. |
-| `figures/` | Figure PDFs used by the manuscript. |
-| `reproducibility/tmc_trace_all_results.csv` | Curated completed trace-derived run rows. |
-| `reproducibility/tmc_trace_grouped_results.csv` | Grouped mean/std rows used for tables. |
-| `reproducibility/tmc_trace_architecture_fairness.csv` | Per-architecture fairness aggregation. |
-| `reproducibility/mobilebandwidth/real_mobile_profiles.csv` | Deterministic ten-client trace-derived bandwidth profiles. |
-| `reproducibility/scripts/` | Existing aggregation, trace-profile, curation, and figure scripts. |
-| `scripts/` | TMC package wrappers for reruns, table generation, figure generation, and consistency checks. |
-| `generated_tables/` | Generated CSV/LaTeX tables from current artifacts. |
-
-The full runnable PALM codebase used by the existing run scripts is currently located at:
-
-```bash
-/home/dr-chandrasen-pandey/Desktop/My Experiments/palmfl_v8_pivot/palmfl_v8_pivot
-```
-
-Set `PALM_RUNNER_ROOT` if your checkout is elsewhere.
 
 ## Environment
 
-The existing scripts assume a Python environment with PyTorch, torchvision, numpy, pandas-compatible CSV handling, PyYAML, matplotlib, and a LaTeX toolchain. The local run scripts default to:
+Install the Python dependencies:
 
 ```bash
-PY=/home/dr-chandrasen-pandey/anaconda3/envs/palmfl310/bin/python
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
 ```
 
-Override it when needed:
-
-```bash
-export PY=/path/to/python
-```
+For CUDA runs, use a PyTorch build compatible with your local driver. Every script accepts `PY=/path/to/python` so an existing environment can be used directly.
 
 ## Dataset Download
 
-MNIST and CIFAR-10 are loaded by the PALM runner. If the datasets are not already present, the runner downloads them through torchvision according to the dataset configuration files under the runner's `configs/` directory.
+MNIST and CIFAR-10 are loaded through torchvision. If the datasets are missing locally, the loader downloads them according to the configuration file being run. Dataset caches are excluded from git.
 
-## Trace Profile Construction
+## Mobile Trace Profiles
 
-From the full runner root:
+The packaged mobile profile file is:
 
-```bash
-cd "$PALM_RUNNER_ROOT"
-"${PY:-python}" scripts/build_real_mobile_profiles.py --num-clients 10
+```text
+data/mobilebandwidth/real_mobile_profiles.csv
 ```
 
-The manuscript package stores the curated profile at:
+Regenerate it with:
 
 ```bash
-reproducibility/mobilebandwidth/real_mobile_profiles.csv
+python3 scripts/build_real_mobile_profiles.py --num-clients 10
 ```
 
-## Current Completed Runs
-
-The current manuscript uses completed artifacts summarized in:
+## Smoke Test
 
 ```bash
-reproducibility/tmc_trace_all_results.csv
-reproducibility/tmc_trace_grouped_results.csv
-reproducibility/tmc_trace_architecture_fairness.csv
+python -m palmfl.main --config configs/palmfl_fake_smoke.yaml
 ```
 
-MNIST operating-mode, baseline, and ablation rows use seeds 42, 43, and 44 under independent partition and architecture seeds. CIFAR-10 ablation rows also use seeds 42, 43, and 44. The primary CIFAR-10 operating-mode and baseline rows remain a seed-42 trace-calibrated case study in the curated independent-split results.
+## Full Experiment Sweeps
 
-## Rerun Commands
-
-Run the current MNIST campaign:
+Revised operating modes and reference baselines:
 
 ```bash
-cd /home/dr-chandrasen-pandey/PALM_review
-PALM_RUNNER_ROOT="/home/dr-chandrasen-pandey/Desktop/My Experiments/palmfl_v8_pivot/palmfl_v8_pivot" \
-  bash scripts/run_all_mnist.sh
+PY=python3 DEVICE=cuda bash scripts/run_revised_experiments.sh
 ```
 
-Run the current CIFAR campaign. This may take several hours:
+Ablation sweep:
 
 ```bash
-cd /home/dr-chandrasen-pandey/PALM_review
-PALM_RUNNER_ROOT="/home/dr-chandrasen-pandey/Desktop/My Experiments/palmfl_v8_pivot/palmfl_v8_pivot" \
-  bash scripts/run_all_cifar.sh
+SEEDS="42 43 44" DATASETS="mnist cifar10" DEVICE=cuda PY=python3 bash scripts/run_ablation_experiments.sh
 ```
 
-Run the ablation campaign from the full runner. The current curated package includes completed MNIST and CIFAR-10 seeds 42, 43, and 44 ablation artifacts:
+The sweeps can be expensive. For quick validation, set `DEVICE=cpu` and reduce `SEEDS` or `DATASETS`.
+
+## Aggregation
+
+Raw run folders are expected under `outputs/`. Aggregate them with:
 
 ```bash
-cd /home/dr-chandrasen-pandey/PALM_review
-PALM_RUNNER_ROOT="/home/dr-chandrasen-pandey/Desktop/My Experiments/palmfl_v8_pivot/palmfl_v8_pivot" \
-  SEEDS="42 43 44" DATASETS="mnist cifar10" PY=python3 \
-  bash scripts/run_ablation_campaign.sh
+python3 scripts/aggregate_results.py
+python3 scripts/curate_trace_results.py
 ```
 
-## Table and Figure Generation
+Expected curated outputs:
 
-Generate CSV/LaTeX tables from current artifacts:
+```text
+analysis/trace_all_results.csv
+analysis/trace_grouped_results.csv
+analysis/trace_architecture_fairness.csv
+```
+
+## Diagnostic Figures
+
+Diagnostic plots can be generated from the curated CSVs:
 
 ```bash
-cd /home/dr-chandrasen-pandey/PALM_review
-python3 scripts/make_tables.py
+python3 scripts/plot_experiment_figures.py \
+  --results analysis/trace_all_results.csv \
+  --fairness analysis/trace_architecture_fairness.csv \
+  --figdir analysis/figures
 ```
 
-Regenerate manuscript figures:
+Generated plots are written under `analysis/figures/`.
 
-```bash
-cd /home/dr-chandrasen-pandey/PALM_review
-PALM_RUNNER_ROOT="/home/dr-chandrasen-pandey/Desktop/My Experiments/palmfl_v8_pivot/palmfl_v8_pivot" \
-  python3 scripts/make_figures.py
-```
-
-Compile the manuscript:
-
-```bash
-pdflatex -interaction=nonstopmode main.tex
-pdflatex -interaction=nonstopmode main.tex
-```
-
-Run consistency checks:
+## Consistency Check
 
 ```bash
 python3 scripts/check_results_consistency.py
 ```
 
-## Expected Outputs
+The checker verifies that required code, config, and result files exist, curated CSVs are non-empty, and repository documentation remains experiment-focused.
 
-| Command | Expected outputs |
-|---|---|
-| `scripts/make_tables.py` | `generated_tables/*.csv`, `generated_tables/*.tex` |
-| `scripts/make_figures.py` | `figures/fig2_learning_curves.pdf`, `figures/fig5_accuracy_energy_frontier.pdf`, `figures/fig6_comm_privacy_bars.pdf`, `figures/fig7_architecture_fairness.pdf` |
-| `pdflatex` | `main.pdf` |
-| `scripts/check_results_consistency.py` | Exit code 0 only when current manuscript/package checks pass |
+## Current Packaged Results
 
-## Hardware and Runtime Notes
+The committed CSVs include completed MNIST and CIFAR-10 experiment artifacts from the current implementation snapshot, including ablation rows for seeds 42, 43, and 44 where present. Some larger runs remain incomplete and should be regenerated before making stronger claims:
 
-The completed trace-derived MNIST operating-mode campaign and MNIST/CIFAR-10 ablation campaigns were run locally before this package update. The ablation diagnostics can run on CPU, but the local `palmfl310` environment was used for CUDA runs on the visible GTX 1050. The full CIFAR main operating-mode/baseline campaign is substantially more expensive on this setup and is incomplete in the curated artifacts beyond the seed-42 case-study rows. Real-device energy calibration has not been run.
-
-## Incomplete Items
-
-The following TMC-readiness items are documented but not completed in current artifacts:
-
-- multi-seed independent CIFAR-10 main operating-mode/baseline campaign,
-- real-device calibration or cost-model sensitivity campaign,
-- stronger hetero-FL baselines such as HeteroFL/FjORD/FedDF/FedGH/GEFL.
+- full multi-seed CIFAR-10 main operating-mode and baseline sweep,
+- real-device latency or energy calibration,
+- additional heterogeneous FL baselines beyond the packaged references.
